@@ -23,7 +23,9 @@ app.use(cors({
         'http://localhost:5182',
         'http://localhost:5183',
         'http://localhost:5184',
-        'http://localhost:5185'
+        'http://localhost:5185',
+        'https://rem-front.vercel.app', // Your Vercel domain
+        'https://obligation-remainder.vercel.app' // Fallback/Project default
     ],
     credentials: true
 }));
