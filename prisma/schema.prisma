@@ -12,6 +12,17 @@ model User {
   email       String       @unique
   password    String
   obligations Obligation[]
+  subscriptions PushSubscription[]
+  notificationTime String @default("09:00")
+}
+
+model PushSubscription {
+  id        String   @id @default(uuid())
+  endpoint  String
+  keys      String   // Stored as JSON string
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
 
 model Obligation {

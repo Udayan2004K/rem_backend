@@ -17,7 +17,7 @@ router.post('/register', async (req, res) => {
             data: { email, password: hashedPassword }
         });
         (req.session as any).userId = user.id;
-        res.json({ id: user.id, email: user.email });
+        res.json({ id: user.id, email: user.email, notificationTime: user.notificationTime });
     } catch (e: any) {
         console.error("Register error:", e);
         res.status(400).json({ error: e.message || "User already exists or failed to create" });
@@ -33,7 +33,7 @@ router.post('/login', async (req, res) => {
             return;
         }
         (req.session as any).userId = user.id;
-        res.json({ id: user.id, email: user.email });
+        res.json({ id: user.id, email: user.email, notificationTime: user.notificationTime });
     } catch (e) {
         res.status(500).json({ error: "Login failed" });
     }
@@ -52,7 +52,7 @@ router.get('/me', async (req, res) => {
     }
     const user = await prisma.user.findUnique({ where: { id: (req.session as any).userId } });
     if (user) {
-        res.json({ id: user.id, email: user.email });
+        res.json({ id: user.id, email: user.email, notificationTime: user.notificationTime });
     } else {
         res.status(401).json({ error: "User not found" });
     }

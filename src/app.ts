@@ -4,6 +4,7 @@ import session from 'express-session';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
 import obligationRoutes from './routes/obligation';
+import notificationRoutes from './routes/notifications';
 
 dotenv.config();
 
@@ -24,8 +25,8 @@ app.use(cors({
         'http://localhost:5183',
         'http://localhost:5184',
         'http://localhost:5185',
-        'https://rem-front.vercel.app', // Your Vercel domain
-        'https://obligation-remainder.vercel.app' // Fallback/Project default
+        'https://rem-front.vercel.app',
+        'https://obligation-remainder.vercel.app'
     ],
     credentials: true
 }));
@@ -45,5 +46,6 @@ app.use(session({
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/obligations', obligationRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 export default app;
