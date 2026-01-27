@@ -8,6 +8,6 @@ const PORT = process.env.PORT || 3001;
 startNotificationCron();
 
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    // console.log(`Server running on http://localhost:${PORT}`);
     setInterval(() => { }, 1000); // Keep process alive hack
 });

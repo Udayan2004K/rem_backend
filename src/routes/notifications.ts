@@ -13,7 +13,6 @@ const initWebPush = () => {
             process.env.VAPID_PUBLIC_KEY,
             process.env.VAPID_PRIVATE_KEY
         );
-        console.log('Web Push initialized');
     } else {
         console.warn('VAPID keys not found. Push notifications will not work.');
     }
@@ -106,23 +105,15 @@ export const startNotificationCron = () => {
         const now = new Date();
         const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-        console.log(`Checking notifications for time: ${currentTime}`);
+        // console.log(`Checking notifications for time: ${currentTime}`);
 
         try {
-            // DEBUG: Check what's in the DB
-            const allUsers = await prisma.user.findMany({ select: { email: true, notificationTime: true } });
-            console.log('Current DB Users:', allUsers.map(u => `${u.email}: ${u.notificationTime}`));
-
             const users = await prisma.user.findMany({
                 where: {
                     notificationTime: currentTime
                 },
                 include: { subscriptions: true, obligations: true }
             });
-
-            if (users.length > 0) {
-                console.log(`Found ${users.length} users configured for ${currentTime}`);
-            }
 
             for (const user of users) {
                 if (user.subscriptions.length === 0) continue;
@@ -133,11 +124,6 @@ export const startNotificationCron = () => {
                 user.subscriptions.forEach(sub => {
                     uniqueSubs.set(sub.endpoint, sub);
                 });
-
-                if (uniqueSubs.size !== user.subscriptions.length) {
-                    // @ts-ignore
-                    console.log(`User ${user.email} has duplicate subscriptions. Sending to ${uniqueSubs.size} unique endpoints out of ${user.subscriptions.length} total.`);
-                }
 
                 const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
@@ -171,7 +157,7 @@ export const startNotificationCron = () => {
                         await webpush.sendNotification(pushSub, payload);
                     } catch (error: any) {
                         if (error.statusCode === 410 || error.statusCode === 404) {
-                            console.log('Subscription expired, deleting:', sub.endpoint);
+                            // console.log('Subscription expired, deleting:', sub.endpoint);
                             await prisma.pushSubscription.delete({ where: { id: sub.id } }); // Delete by ID is safer if logic uses deleteMany by endpoint
                         } else {
                             console.error('Push error:', error);
