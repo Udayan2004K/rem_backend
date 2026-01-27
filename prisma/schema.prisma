@@ -8,31 +8,31 @@ datasource db {
 }
 
 model User {
-  id          String       @id @default(uuid())
-  email       String       @unique
-  password    String
-  obligations Obligation[]
-  subscriptions PushSubscription[]
-  notificationTime String @default("09:00")
+  id               String             @id @default(uuid())
+  email            String             @unique
+  password         String
+  notificationTime String             @default("09:00")
+  obligations      Obligation[]
+  subscriptions    PushSubscription[]
 }
 
 model PushSubscription {
   id        String   @id @default(uuid())
   endpoint  String
-  keys      String   // Stored as JSON string
+  keys      String
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Obligation {
-  id        String   @id @default(uuid())
-  title     String
-  dueDate   DateTime
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  id          String   @id @default(uuid())
+  title       String
+  dueDate     DateTime
+  userId      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   isCompleted Boolean  @default(false)
   isRecurring Boolean  @default(false)
+  user        User     @relation(fields: [userId], references: [id])
 }
